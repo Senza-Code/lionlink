@@ -160,9 +160,82 @@ Potential next steps include:
 	•	Availability-based scheduling and calendar integration
 	•	Refined matching weights and explainability
 	•	Stronger enforcement of email verification workflows
-
-Inline comments throughout the codebase are written as notes to future contributors to support continued development.
 ---
 ### Contributors
 - Pearl Senza Sikepe
 - Tyra Minnal Vinay
+---
+
+## References and Learning Resources
+
+The development of LionLink was informed by official documentation and widely used design and development references. The following sources were consulted throughout the project.
+
+### Firebase and Backend Services
+
+- **Firebase Documentation**  
+  https://firebase.google.com/docs  
+  Official documentation for Firebase services, including Authentication, Firestore, and Hosting.
+
+- **Firebase Authentication (Email/Password)**  
+  https://firebase.google.com/docs/auth  
+  Used to implement email/password authentication, verification flows, and domain-based access control.
+
+- **Cloud Firestore Documentation**  
+  https://firebase.google.com/docs/firestore  
+  Referenced for data modeling, real-time listeners, and transactional updates.
+
+- **Firebase Hosting Documentation**  
+  https://firebase.google.com/docs/hosting  
+  Used to deploy the application as a single-page app with rewrite rules.
+
+---
+
+### Frontend Frameworks and Tooling
+
+- **React Documentation**  
+  https://react.dev  
+  Official React documentation used for component design, hooks, and application state management.
+
+- **TypeScript Handbook**  
+  https://www.typescriptlang.org/docs  
+  Used to define data types, component props, and improve code safety.
+
+- **Vite Documentation**  
+  https://vitejs.dev/guide/  
+  Used for development server setup and production builds.
+
+---
+
+### Styling and UI
+
+- **Tailwind CSS Documentation**  
+  https://tailwindcss.com/docs  
+  Used for utility-first styling, layout structure, and responsive design.
+
+- **Lucide Icons**  
+  https://lucide.dev  
+  Open-source icon set used for navigation and interface elements.
+
+- **Heroicons**  
+  https://heroicons.com  
+  SVG icon set used for neutral, accessible UI icons.
+
+---
+
+### General Web Development References
+
+- **MDN Web Docs**  
+  https://developer.mozilla.org  
+  Used as a reference for JavaScript, browser APIs, and accessibility best practices.
+
+- **Git Documentation**  
+  https://git-scm.com/doc  
+  Used for version control and project organization.
+
+---
+
+### Notes on Learning Process
+
+This project was developed through iterative experimentation, debugging, and incremental refinement rather than by following a single end-to-end tutorial. Inline comments throughout the codebase document design decisions, tradeoffs, and lessons learned during development.
+
+---
