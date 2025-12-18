@@ -55,38 +55,51 @@ These choices are documented directly in the code to support future development.
 ---
 
 ## Project Structure
+## Project Structure
+
+```text
 lionlink/
 ├── index.html
 ├── firebase.json
 ├── .firebaserc
 ├── package.json
+├── package-lock.json
 ├── vite.config.ts
 ├── tailwind.config.cjs
-├── tsconfig*.json
+├── postcss.config.cjs
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
 ├── src/
 │   ├── main.tsx
 │   ├── index.css
+│   ├── App.css
 │   ├── App.tsx
 │   ├── components/
-│   │   ├── HomeScreen.tsx
-│   │   ├── FindPartnersScreen.tsx
-│   │   ├── SessionsScreen.tsx
-│   │   ├── ProfileScreen.tsx
-│   │   ├── LoginScreen.tsx
 │   │   ├── BottomNavigation.tsx
-│   │   ├── VerifyEmailScreen.tsx
-│   │   └── ErrorBoundary.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── FindPartnersScreen.tsx
+│   │   ├── HomeScreen.tsx
+│   │   ├── LoginScreen.tsx
+│   │   ├── ProfileScreen.tsx
+│   │   ├── SessionsScreen.tsx
+│   │   └── VerifyEmailScreen.tsx
 │   └── lib/
-│       ├── firebase.ts
 │       ├── auth.ts
-│       ├── profiles.ts
-│       ├── updateProfile.ts
-│       ├── useMyProfile.ts
-│       ├── partners.ts
+│       ├── authState.ts
+│       ├── createSession.ts
+│       ├── firebase.ts
+│       ├── logout.ts
 │       ├── match.ts
-│       ├── sessions.ts
+│       ├── partners.ts
+│       ├── profiles.ts
+│       ├── seed.ts
 │       ├── sessionActions.ts
-│       └── sessionInterest.ts
+│       ├── sessionInterest.ts
+│       ├── sessions.ts
+│       ├── updateProfile.ts
+│       └── useMyProfile.ts
+```
 ---
 
 ## Firebase Configuration
