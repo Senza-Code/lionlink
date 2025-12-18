@@ -1,73 +1,153 @@
-# React + TypeScript + Vite
+# LionLink — Finding Study Partners Through Trust and Shared Context
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**LionLink** is a student-centered web application designed to help university students find compatible study partners and study sessions based on shared courses, study styles, and availability. The system emphasizes trust, clarity, and low social friction by limiting access to verified university email accounts and by keeping interactions focused on academic collaboration rather than social networking.
 
-Currently, two official plugins are available:
+This project was developed as a **semester-long design and engineering project**, integrating user-centered design principles with a functional, deployable system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Problem Statement
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+University students often struggle to find effective study partners despite being surrounded by peers in the same courses. Existing solutions—group chats, large forums, or social platforms—are often noisy, unstructured, or socially intimidating. As a result, students default to studying alone even when collaborative study would be beneficial.
 
-## Expanding the ESLint configuration
+LionLink addresses this gap by offering a lightweight, purpose-built tool that helps students identify and connect with others who share:
+- the same courses,
+- compatible study styles,
+- and similar expectations around collaboration.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Design Solution
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+LionLink provides a focused workflow that allows students to:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Authenticate using a verified university email address  
+- Create a concise academic profile  
+- View potential study partners with transparent match percentages  
+- Browse upcoming study sessions  
+- Express interest in sessions through a simple interaction  
+- Navigate the app using a clear, mobile-first interface  
+
+The design intentionally avoids social-media-style engagement in favor of calm, task-oriented interactions appropriate for academic settings.
+
+---
+
+## Demo-Oriented Design Decisions
+
+This version of LionLink is optimized for demonstration and evaluation purposes:
+
+- Email verification is partially bypassed to ensure a smooth demo experience  
+- Matching logic is intentionally generous to clearly demonstrate the concept  
+- Interest counts use optimistic UI updates for immediate visual feedback  
+- Some interactions (e.g., dismissing partners, connecting) are local-only  
+
+These choices are documented directly in the code to support future development.
+
+---
+
+## Technology Stack
+
+- **Frontend:** React, TypeScript, Vite  
+- **Styling:** Tailwind CSS  
+- **Backend Services:** Firebase Authentication and Firestore  
+- **Hosting:** Firebase Hosting  
+
+---
+
+## Project Structure
+lionlink/
+├── index.html
+├── firebase.json
+├── .firebaserc
+├── package.json
+├── vite.config.ts
+├── tailwind.config.cjs
+├── tsconfig*.json
+├── src/
+│   ├── main.tsx
+│   ├── index.css
+│   ├── App.tsx
+│   ├── components/
+│   │   ├── HomeScreen.tsx
+│   │   ├── FindPartnersScreen.tsx
+│   │   ├── SessionsScreen.tsx
+│   │   ├── ProfileScreen.tsx
+│   │   ├── LoginScreen.tsx
+│   │   ├── BottomNavigation.tsx
+│   │   ├── VerifyEmailScreen.tsx
+│   │   └── ErrorBoundary.tsx
+│   └── lib/
+│       ├── firebase.ts
+│       ├── auth.ts
+│       ├── profiles.ts
+│       ├── updateProfile.ts
+│       ├── useMyProfile.ts
+│       ├── partners.ts
+│       ├── match.ts
+│       ├── sessions.ts
+│       ├── sessionActions.ts
+│       └── sessionInterest.ts
+---
+
+## Firebase Configuration
+
+### Authentication
+- Email/password authentication enabled  
+- Restricted to university email domain  
+- Authorized domains configured for local development and deployment  
+
+### Firestore User Profile Schema
+
+Each user profile document includes:
+
+```ts
+{
+  uid: string,
+  email: string,
+  name: string,
+  major: string,
+  year: string,
+  enrolledCourses: string[],
+  studyStyleTags: string[],
+  mode: string[],
+  uni: string
+} 
 ```
+---
+### Running the Project Locally
+npm install
+npm run dev
+---
+### Deployment
+The application is deployed using Firebase Hosting.
+The production build is generated via Vite and served as a single-page application.
+---
+### Demo Video
+The project demo video:
+	•	Uses a 16:9 aspect ratio
+	•	Includes narration
+	•	Explains the problem, design process, and solution
+	•	Demonstrates the deployed application
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The video integrates both conceptual explanation and live interaction with the system.
+---
+### Design Reflection
+LionLink prioritizes:
+	•	trust over scale
+	•	clarity over complexity
+	•	academic usefulness over social engagement
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The system is intentionally modest in scope, demonstrating how thoughtful constraints can improve usability and user comfort.
+---
+### Future Work
+Potential next steps include:
+	•	Persistent partner preferences and dismissals
+	•	Availability-based scheduling and calendar integration
+	•	Refined matching weights and explainability
+	•	Stronger enforcement of email verification workflows
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Inline comments throughout the codebase are written as notes to future contributors to support continued development.
+---
+### Contributors
+Pearl Senza Sikepe
+Tyra Minnal Vinay

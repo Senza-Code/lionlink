@@ -1,29 +1,53 @@
+// src/lib/profiles.ts
+//
+// Notes to self:
+// - This file owns the *authoritative* shape of a user profile in Firestore.
+// - All profile creation + reads flow through here.
+// - Keeping this centralized prevents schema drift across the app.
 import type { User } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 
+// Firestore user profile shape.
+//
+// IMPORTANT SCHEMA DECISIONS:
+// - `enrolledCourses` is the canonical field name (not `courses`).
+// - Some fields are optional to allow partial profiles during onboarding.
 export type UserProfile = {
   uid: string;
-  email: string | null;
+  email?: string | null;
   uni?: string | null;
 
-  name: string;
-  major: string;
-  year: string;
+  name?: string;
+  major?: string;
+  year?: string;
 
-  courses: string[];
-  goals: string[];
-  availability: string[];
+  // IMPORTANT: we use enrolledCourses everywhere (not "courses")
+  enrolledCourses?: string[];
+
+  studyStyle?: string[];
+  mode?: string[];
 
   createdAt?: any;
   updatedAt?: any;
 };
 
-function nameFromEmail(email: string | null) {
-  const base = (email ?? "").split("@")[0] || "Student";
-  return base.replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+// Helper: derive a readable fallback name from email.
+// Example: "ps3358@columbia.edu" → "Ps3358
+function nameFromEmail(email: string) {
+  const base = email.split("@")[0] || "Student";
+  return base
+    .replace(/[._-]+/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+
+// Ensure a Firestore profile exists for the authenticated user.
+//
+// Why this exists:
+// - Firebase Auth users do NOT automatically get Firestore documents.
+// - This guarantees every logged-in user has a profile doc.
+// - Safe to call multiple times (idempotent).
 export async function ensureUserProfile(
   user: User,
   opts?: { uni?: string | null; name?: string }
@@ -31,50 +55,47 @@ export async function ensureUserProfile(
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  if (!snap.exists()) {
-    const profile: UserProfile = {
-      uid: user.uid,
-      email: user.email,
-      uni: opts?.uni ?? null,
-
-      name: opts?.name ?? nameFromEmail(user.email),
-      major: "Undeclared",
-      year: "—",
-
-      // ✅ critical defaults so match.ts never crashes
-      courses: [],
-      goals: [],
-      availability: [],
-
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
-
-    await setDoc(ref, profile);
-    return profile;
+  if (snap.exists()) {
+    // Profile already exists → just keep updatedAt fresh.
+    await setDoc(ref, { updatedAt: serverTimestamp() }, { merge: true });
+    return;
   }
 
-  // If profile exists but missing fields, patch them (safe migrations)
-  const data = snap.data() as Partial<UserProfile>;
-  const patch: Partial<UserProfile> = {};
+   // First-time profile creation.
+  const email = user.email ?? null;
 
-  if (!Array.isArray(data.courses)) patch.courses = [];
-  if (!Array.isArray(data.goals)) patch.goals = [];
-  if (!Array.isArray(data.availability)) patch.availability = [];
-  if (typeof data.name !== "string") patch.name = nameFromEmail(user.email);
-  if (typeof data.major !== "string") patch.major = "Undeclared";
-  if (typeof data.year !== "string") patch.year = "—";
+  const initial: UserProfile = {
+    uid: user.uid,
+    email,
+    uni: opts?.uni ?? null,
 
-  if (Object.keys(patch).length > 0) {
-    patch.updatedAt = serverTimestamp();
-    await updateDoc(ref, patch);
-  }
+    // Prefer provided name → fallback to email-derived name → fallback to "Student".
+    name: opts?.name ?? (email ? nameFromEmail(email) : "Student"),
+    
+    major: "",
+    year: "",
 
-  return { ...data, ...patch };
+    enrolledCourses: [],
+    studyStyle: [],
+    mode: [],
+
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+  // Merge=true so future schema additions don’t break older users.
+  await setDoc(ref, initial, { merge: true });
 }
 
-export async function getMyProfile(uid: string) {
+// Fetch the current user's profile.
+//
+// Notes:
+// - Returns null if the document does not exist.
+// - Caller is responsible for handling loading / empty states.
+export async function getMyProfile(uid: string): Promise<UserProfile | null> {
   const ref = doc(db, "users", uid);
   const snap = await getDoc(ref);
-  return snap.exists() ? snap.data() : null;
+
+  if (!snap.exists()) return null;
+
+  return snap.data() as UserProfile;
 }

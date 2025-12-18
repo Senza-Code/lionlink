@@ -1,3 +1,15 @@
+/* src/App.css
+ *
+ * Notes to self:
+ * - This file comes from the default Vite + React template.
+ * - Most of these styles are NOT actively used in LionLink.
+ * - I’m keeping it to avoid breaking imports and to preserve
+ *   the original project scaffolding.
+ *
+ * If I continue this project later:
+ * - I can safely delete this file once I confirm no components rely on it.
+ * - All real styling lives in Tailwind (index.css + className usage).
+ */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,6 +17,8 @@
   text-align: center;
 }
 
+
+/* Legacy demo logo styles (not used in LionLink UI) */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -17,7 +31,7 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
-
+/* Demo animation from Vite starter template */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,16 +41,19 @@
   }
 }
 
+/* Accessibility-respecting animation (starter template behavior) */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Generic container styles from template */
 .card {
   padding: 2em;
 }
 
+/* Placeholder text style from template */
 .read-the-docs {
   color: #888;
 }

@@ -1,97 +1,73 @@
-export type MatchResult = {
-  score: number;
-  reasons: string[];
-};
+// src/lib/match.ts
+//
+// Notes to self:
+// - This matcher is intentionally simple for the semester project demo.
+// - I’m optimizing for clarity + believability, not algorithmic perfection.
+// - Courses matter most, study style helps refine.
+// - The goal is to avoid discouraging low matches during demos.
 
-export type ProfileLike = {
+// I’m keeping the inputs super simple so I don’t fight TypeScript.
+// I only need courses + style tags for the demo
+type Me = {
   courses?: string[];
-  goals?: string[];
-  availability?: string[];
-  major?: string;
-  year?: string;
+  studyStyleTags?: string[];
 };
 
-export type SessionLike = {
-  courseCode?: string;
-  courseName?: string;
-  hostName?: string;
-  startAt?: any; // Firestore Timestamp
-  endAt?: any;   // Firestore Timestamp
+type Them = {
+  courses?: string[];
+  studyStyleTags?: string[];
 };
 
+// Defensive helper:
+// - Firestore data changed shapes a few times during development.
+// - This guarantees I always work with a clean string array
 function asArray(v: unknown): string[] {
-  return Array.isArray(v) ? (v as string[]) : [];
+  return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
 }
 
-export function scoreSession(me: ProfileLike, session: SessionLike): MatchResult {
-  const reasons: string[] = [];
-  let score = 0;
 
-  const myCourses = asArray(me?.courses);
-  const myGoals = asArray(me?.goals);
-  const myAvail = asArray(me?.availability);
-
-  const courseCode = (session?.courseCode ?? "").trim();
-
-  // 1) Course match (big weight)
-  if (courseCode && myCourses.includes(courseCode)) {
-    score += 70;
-    reasons.push("In your courses");
-  }
-
-  // 2) Goal overlap (optional, safe)
-  const sessionTags = asArray((session as any)?.tags); // if you add tags later
-  const goalOverlap = myGoals.filter((g) => sessionTags.includes(g));
-  if (goalOverlap.length > 0) {
-    score += Math.min(20, goalOverlap.length * 10);
-    reasons.push(`Matches your goals (${goalOverlap[0]})`);
-  }
-
-  // 3) Availability overlap (optional, safe)
-  const sessionSlot = (session as any)?.timeSlot; // if you add timeSlot later
-  if (sessionSlot && myAvail.includes(sessionSlot)) {
-    score += 10;
-    reasons.push("Fits your schedule");
-  }
-
-  // Clamp 0–100
-  score = Math.max(0, Math.min(100, score));
-
-  return { score, reasons };
+// Case-insensitive intersection count.
+// I’m using sets to keep this readable and fast enough for UI
+function intersectionCount(a: string[], b: string[]) {
+  const setB = new Set(b.map((x) => x.toLowerCase()));
+  return a.reduce((acc, x) => acc + (setB.has(x.toLowerCase()) ? 1 : 0), 0);
 }
 
-/**
- * Optional (later): partner matching
- */
-export function scorePartner(me: ProfileLike, them: ProfileLike): MatchResult {
+// Main scoring function.
+//
+// Design decisions (for future me / TA):
+// - Starts with a friendly base score so nobody feels rejected.
+// - Shared courses give a big boost (study partners need shared context).
+// - Shared study styles add smaller boosts.
+// - Final score is capped at 100 to keep UI sane
+export function scorePartner(me: Me, them: Them) {
+  const myCourses = asArray(me.courses);
+  const theirCourses = asArray(them.courses);
+
+  const myTags = asArray(me.studyStyleTags);
+  const theirTags = asArray(them.studyStyleTags);
+
   const reasons: string[] = [];
-  let score = 0;
 
-  const myCourses = asArray(me?.courses);
-  const theirCourses = asArray(them?.courses);
+  // Base score so it feels like a “recommendation engine” and not a punishment engine.
+  let score = 35;
 
-  const sharedCourses = myCourses.filter((c) => theirCourses.includes(c));
-  if (sharedCourses.length > 0) {
-    score += Math.min(60, sharedCourses.length * 20);
-    reasons.push(`Shared course: ${sharedCourses[0]}`);
+  // Courses are king for a study partner demo.
+  const sharedCourses = intersectionCount(myCourses, theirCourses);
+  if (sharedCourses > 0) {
+    score += 45; // big bump
+    reasons.push(`${sharedCourses} shared course${sharedCourses > 1 ? "s" : ""}`);
   }
 
-  const myGoals = asArray(me?.goals);
-  const theirGoals = asArray(them?.goals);
-  const sharedGoals = myGoals.filter((g) => theirGoals.includes(g));
-  if (sharedGoals.length > 0) {
-    score += Math.min(30, sharedGoals.length * 15);
-    reasons.push(`Shared goal: ${sharedGoals[0]}`);
+  // Study style tags help fine-tune compatibility.
+  const sharedTags = intersectionCount(myTags, theirTags);
+  if (sharedTags > 0) {
+    score += Math.min(20, sharedTags * 7);
+    reasons.push(`${sharedTags} shared style tag${sharedTags > 1 ? "s" : ""}`);
   }
 
-  const myAvail = asArray(me?.availability);
-  const theirAvail = asArray(them?.availability);
-  const sharedAvail = myAvail.filter((a) => theirAvail.includes(a));
-  if (sharedAvail.length > 0) {
-    score += 10;
-    reasons.push("Schedule overlaps");
-  }
-
+  // Hard cap to 100 because UI doesn’t need 143% match 😭
   score = Math.max(0, Math.min(100, score));
+
   return { score, reasons };
 }

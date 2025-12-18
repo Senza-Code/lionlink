@@ -1,43 +1,43 @@
-import React from "react";
+// src/components/SessionsScreen.tsx
+//
+// Notes to self:
+// - This is intentionally lightweight for the demo.
+// - “Upcoming sessions” live on HomeScreen, so this screen is a placeholder.
+// - I keep the layout consistent with the rest of the app (same padding + scroll).
+// - I use a clean icon (no emoji) for the back action.
 
-type SessionsScreenProps = {
+import type { FC } from "react";
+
+type Props = {
   onNavigate: (screen: string) => void;
 };
 
-export default function SessionsScreen({ onNavigate }: SessionsScreenProps) {
+const SessionsScreen: FC<Props> = ({ onNavigate }) => {
   return (
-    <div className="h-full w-full max-w-md mx-auto flex flex-col px-6 pt-6 pb-16 bg-white">
-      <header className="mb-4 space-y-1">
-        <h1 className="text-xl font-semibold">Sessions</h1>
-        <p className="text-sm text-gray-600">
-          Track your upcoming and past accountability sessions.
-        </p>
-      </header>
-
-      <main className="flex-1 space-y-4">
-        <section className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-          <p className="font-semibold mb-1">No sessions scheduled yet</p>
-          <p className="text-xs text-gray-600 mb-3">
-            Once you start matching with partners, your focus sessions will show
-            up here with reminders and check-in notes.
-          </p>
+    <div className="h-full w-full max-w-md mx-auto bg-white">
+      <div className="h-full overflow-y-auto px-6 pt-6 pb-24">
+        <div className="flex items-center gap-3 mb-4">
           <button
-            onClick={() => onNavigate("find")}
-            className="inline-flex items-center justify-center rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-black transition-colors"
+            onClick={() => onNavigate("home")}
+            className="text-sm text-gray-600 hover:text-gray-900"
+            aria-label="Back"
           >
-            Find partners to schedule with
+            ←
           </button>
-        </section>
+          <h1 className="text-base font-semibold flex-1 text-center pr-6">
+            Sessions
+          </h1>
+        </div>
 
-        <section className="space-y-2 text-xs text-gray-500">
-          <p>Later we can add:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Calendar view of sessions</li>
-            <li>Streaks and consistency metrics</li>
-            <li>Notes after each session</li>
-          </ul>
-        </section>
-      </main>
+        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-sm font-semibold text-gray-900">Coming soon</p>
+          <p className="text-xs text-gray-600 mt-1">
+            For the demo, upcoming sessions are shown on the Home screen.
+          </p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default SessionsScreen;
