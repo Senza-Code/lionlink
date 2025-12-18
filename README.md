@@ -28,7 +28,7 @@ LionLink provides a focused workflow that allows students to:
 - Express interest in sessions through a simple interaction  
 - Navigate the app using a clear, mobile-first interface  
 
-The design intentionally avoids social-media-style engagement in favor of calm, task-oriented interactions appropriate for academic settings.
+The design intentionally avoids social-media-style engagement in favor of calm, task-oriented interactions aligned with academic contexts.
 
 ---
 
@@ -115,8 +115,10 @@ Each user profile document includes:
 ```
 ---
 ### Running the Project Locally
+```bash
 npm install
 npm run dev
+```
 ---
 ### Deployment
 The application is deployed using Firebase Hosting.
@@ -149,5 +151,5 @@ Potential next steps include:
 Inline comments throughout the codebase are written as notes to future contributors to support continued development.
 ---
 ### Contributors
-Pearl Senza Sikepe
-Tyra Minnal Vinay
+- Pearl Senza Sikepe
+- Tyra Minnal Vinay

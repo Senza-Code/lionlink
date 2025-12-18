@@ -1,3 +1,13 @@
+/* src/index.css */
+
+/*
+  Notes to self:
+  - This file is intentionally minimal.
+  - Tailwind injects all base styles, components, and utilities here.
+  - Any global tweaks (fonts, background color, etc.) would go *below* these.
+  - Keeping this clean helps avoid fighting Tailwind later.
+*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
