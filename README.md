@@ -3,7 +3,7 @@
 
 **LionLink** is a student-centered web application built to bridge the gap between "sitting in the same lecture" and "succeeding in the same study group." It prioritizes verified academic identity and a calm, focused UI to reduce the social friction of finding collaborators.
 
-[🎬 Watch the Demo Video]((https://drive.google.com/file/d/1knNzLbkZyOutLw5tb22nHq_gUGoJHhWb/view?usp=drive_link))  
+[🎬 Watch the Demo Video]([INSERT_YOUTUBE_OR_DRIVE_LINK_HERE](https://drive.google.com/file/d/1knNzLbkZyOutLw5tb22nHq_gUGoJHhWb/view?usp=drive_link))  
 [🌐 Visit Live Site](INSERT_FIREBASE_APP_LINK_HERE)
 
 ---
